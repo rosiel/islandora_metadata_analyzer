@@ -10,6 +10,10 @@ function islandora_MODS_metadata_analyzer($object, &$results, &$data, &$params, 
 $datastream = $object['MODS']->content;
 //$xml = simplexml_load_string($datastream, null, null, 'mods', true);
 $sxe = simplexml_load_string($datastream, 'SimpleXMLIterator');
+if ($sxe === FALSE) {
+  watchdog('islandora_metadata', 'Could not parse MODS in @pid', array('@pid'=>$object->id), WATCHDOG_ERROR);
+  return;
+}
 module_load_include('inc', 'islandora_metadata_analyzer', 'includes/processors');
 $params['stream_root'] = '/mods/';
 processDocument($sxe, $object->id, $results, $data, '/mods', $params, $path_data);
